@@ -1,1 +1,112 @@
+import mod
 
+project_name=''
+
+from bs4 import BeautifulSoup
+
+current_folder=mod.python.begin(project_name)
+
+list_abc=mod.alpha.abc()
+
+current_excel=mod.excel.create(current_folder,project_name)
+
+excel_row=1 #row 1 is excel column titles
+row_counter=0 # each test is increment
+my_list=[excel_row,'python char','NOM SOCIETE','SIRET','ADRESSE','VILLE','CODE POSTAL'
+         		   ,'lieu depot','lieu reparation','lieu contact conso','reparateur atelier','reparateur domicile'
+                   ,'GEM hors froid','GEM avec froid','PEM','TV','tout EGP','photo','EI&T','gros outillage','petit outillage','JELS mobilité']
+
+mod.excel.insert(current_excel,my_list)
+mod.excel.save(current_excel,current_folder,project_name)
+
+current_driver=mod.web.open_windows('https://www.')
+field=mod.web.clic_xpath(current_driver,'//*[@id="TFormView_Annuaire_Edit7"]')
+
+
+#print(list_abc.index('bern'))
+list_abc=['aa','be',list_abc[20735],'ctru','ctruu',list_abc[0],'ba','be',list_abc[20735],'ctru',list_abc[0],'ba']
+
+go=input('Tapez go:')
+
+if go != 'go':
+    print('arret du programme !!!')
+    exit()
+      
+print('start !!')
+
+
+for char in list_abc:
+
+    row_counter=row_counter+1
+    #print(row_counter)
+
+    mod.web.set_data(field,char)
+
+    my_soup=BeautifulSoup(current_driver.page_source, 'lxml')
+
+    result=my_soup.find('span', {'id': 'TFormView_Annuaire_TabSheet15'})
+    result_2=result.get('style')
+
+    if 'display: none' in result_2:
+        #print('no result')
+        continue
+
+    # RESULT OK
+
+    excel_row=excel_row+1
+
+    nom_soc=my_soup.find('div', {'id': 'TFormView_Annuaire_Label16'})
+    nom_soc_2=nom_soc.find('b')
+
+    siret_soc=my_soup.find('div', {'id': 'TFormView_Annuaire_Label18'})
+    adres_soc=my_soup.find('div', {'id': 'TFormView_Annuaire_Label20'})
+    ville_soc=my_soup.find('div', {'id': 'TFormView_Annuaire_Label21'})
+    code_soc=my_soup.find('div', {'id': 'TFormView_Annuaire_Label22'})
+
+    prop1=my_soup.find('div', {'id': 'TFormView_Annuaire_Label28'})
+    prop2=my_soup.find('div', {'id': 'TFormView_Annuaire_Label29'})
+    prop3=my_soup.find('div', {'id': 'TFormView_Annuaire_Label42'})
+    prop4=my_soup.find('div', {'id': 'TFormView_Annuaire_Label43'})
+    prop5=my_soup.find('div', {'id': 'TFormView_Annuaire_Label44'})	
+
+    prop1=mod.soup.check(prop1,"style",'(1,')
+    prop2=mod.soup.check(prop2,"style",'(1,')
+    prop3=mod.soup.check(prop3,"style",'(1,')
+    prop4=mod.soup.check(prop4,"style",'(1,')
+    prop5=mod.soup.check(prop5,"style",'(1,')
+
+    dom1=my_soup.find('div', {'id': 'TFormView_Annuaire_Label40'})
+    dom2=my_soup.find('div', {'id': 'TFormView_Annuaire_Label38'})
+    dom3=my_soup.find('div', {'id': 'TFormView_Annuaire_Label37'})
+    dom4=my_soup.find('div', {'id': 'TFormView_Annuaire_Label36'})
+    dom5=my_soup.find('div', {'id': 'TFormView_Annuaire_Label35'})
+    dom6=my_soup.find('div', {'id': 'TFormView_Annuaire_Label34'})
+    dom7=my_soup.find('div', {'id': 'TFormView_Annuaire_Label33'})
+    dom8=my_soup.find('div', {'id': 'TFormView_Annuaire_Label32'})
+    dom9=my_soup.find('div', {'id': 'TFormView_Annuaire_Label31'})
+    dom10=my_soup.find('div', {'id': 'TFormView_Annuaire_Label30'})
+
+    dom1=mod.soup.check(dom1,"style",'(1,')
+    dom2=mod.soup.check(dom2,"style",'(1,')
+    dom3=mod.soup.check(dom3,"style",'(1,')
+    dom4=mod.soup.check(dom4,"style",'(1,')
+    dom5=mod.soup.check(dom5,"style",'(1,')
+    dom6=mod.soup.check(dom6,"style",'(1,')
+    dom7=mod.soup.check(dom7,"style",'(1,')
+    dom8=mod.soup.check(dom8,"style",'(1,')
+    dom9=mod.soup.check(dom9,"style",'(1,')
+    dom10=mod.soup.check(dom10,"style",'(1,')
+
+    my_list=[excel_row,char,nom_soc_2.text,siret_soc.text,adres_soc.text,ville_soc.text,code_soc.text
+             ,prop1,prop2,prop3,prop4,prop5
+             ,dom1,dom2,dom3,dom4,dom5,dom6,dom7,dom8,dom9,dom10]
+    
+    mod.excel.insert(current_excel,my_list)
+    mod.excel.save(current_excel,current_folder,project_name)
+
+
+#WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button[data-testid='uc-accept-all-button']"))).click()
+
+print('-----------------END-------------------')
+
+exit()
