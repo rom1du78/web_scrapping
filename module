@@ -1,0 +1,353 @@
+from shelve import Shelf
+import time
+import subprocess
+import pyautogui
+from datetime import datetime
+import os
+import signal
+from subprocess import Popen
+from openpyxl import Workbook
+import time
+from bs4 import BeautifulSoup
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait 
+from selenium.webdriver.support import expected_conditions as EC
+
+os.system('cls')
+print('---------------START--------------------')
+
+class DirectoryHandler:
+    def __init__(self,current_folder):
+        self.current_folder = current_folder
+
+    def create_directory(self):
+        self.current_folder=os.path.dirname(os.path.realpath(__file__))
+
+
+class ExcelHandler:
+    def __init__(self,current_folder,project_name):
+        os.makedirs(str(current_folder)+'\\excel\\', exist_ok=True)
+        self.filename = (str(current_folder)+'\\excel\\'+str(project_name)+".xlsx")
+        self.workbook = Workbook()
+        self.active_sheet = self.workbook.active
+
+    def add_data_to_sheet(self, cell, data):
+        self.active_sheet[cell] = data
+
+    def add_row_to_sheet(self,data,x):#data one row list colA,colB,colC
+        y=1
+        for each_data in data:
+            self.active_sheet.cell(row=x, column=y, value=each_data)
+            y=y+1
+    
+    def add_list_to_sheet(self,data,x):#data few ROWS list colA
+        y=1       
+        for each_data in data:
+            self.active_sheet.cell(row=x, column=y, value=each_data)
+            x=x+1
+
+    def save_workbook(self):
+        self.workbook.save(self.filename)
+
+
+class web(): # driver= NEVER OTHER NAME !!! 
+    def open(url):
+        options = Options()
+        #options.add_argument('headless')#cache la fenetre
+        options.add_argument("--ignore-certificate-errors")
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        driver = webdriver.Chrome(chrome_options=options, executable_path="C:\WebDriver\chromedriver.exe" )
+        driver.get(url)
+        driver.set_window_position(10, 10)
+        driver.set_window_size(1200, 800)
+        ts.pause(2)
+        return driver
+    
+    def set_data_1(element,data):    
+        element.send_keys(Keys.CONTROL, "a")
+        element.send_keys("", data)
+        element.send_keys(Keys.ENTER)
+        #print('set data ->'+str(data))
+        #print('\n')        
+        #ts.pause(0.02)        #ts.pause(0.02) 250k ok
+        return element
+    
+    def set_data_2(driver,my_path):
+        body=driver.find_element_by_xpath(my_path)    
+        body.send_keys(Keys.PAGE_DOWN)
+        ts.pause(0.5)
+
+    def click_xpath(driver,path):
+        element = driver.find_element(By.XPATH,path)
+        element.click()
+        ts.pause(1)
+    
+    def wait_click_xpath(driver,link_xpath):
+        WebDriverWait(driver,2).until(EC.element_to_be_clickable((By.XPATH,link_xpath))).click() 
+        ts.pause(2)
+  
+        #WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"button[data-testid='uc-accept-all-button']"))).click()
+
+
+class soup():
+    def create_list(my_name,driver,xpath,balise,type,value):
+
+            return_list=[]
+            final_list=[]
+
+            my_driver=driver.find_element_by_xpath(xpath)
+            my_driver.click()
+            time.sleep(1)
+
+            my_soup=BeautifulSoup(driver.page_source, 'lxml')
+
+            my_list=my_soup.findAll(balise, {type: value})
+
+            counter=(   len(my_list)    )
+            print('counter '+str(my_name)+' = '+str(counter)   )
+
+            if counter == 0: 
+                print(  ('\n\n bug-> ')+str(my_name)+('\n\n')    )
+                exit()
+
+            for row in my_list:
+                final_row=(row.text).strip()
+                final_list.append(final_row)
+
+                return_list.append(my_driver)
+                return_list.append(final_list)
+
+            return return_list
+    
+    def check(soup,balise,check):
+                result=soup.get(balise)
+                if check in result:
+                    return 'ok'
+                else:
+                    return 'no'
+
+
+class alpha():
+
+    def abc():
+        alphabet=['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+        list_abc=[]
+
+        for digit_1 in alphabet:
+
+            for digit_2 in alphabet:
+
+                for digit_3 in alphabet:
+
+                    for digit_4 in alphabet:
+
+                        abc=(digit_1+digit_2+digit_3+digit_4)
+                        list_abc.append(abc)
+
+        list_len=len(list_abc)
+        print('list created with success -> '+ str(list_abc[0]),str(list_abc[250000]),str(list_abc[list_len-1]))
+        return list_abc
+
+
+class android():
+
+    def __init__(self, no):
+        #print("variables initialisées -> no / next_no / status")
+        self.no      = no
+        self.next_no = no+1
+
+    def get_no(self):
+        return self.no
+
+    def get_next_no(self):
+        return self.next_no
+
+    def list(begin,end):
+
+        all_no=[] #pour y mettre plein de choses, list, dico...
+
+        for i in range(begin,end+1):
+
+            new_and={
+                'start':timestamp.datetime()
+                ,'no':int(i)
+                ,'game':'no'
+                ,'status':''
+                ,'begin':''
+                ,'end':''
+                ,'process':''
+                }
+            all_no.append(new_and)
+        
+        return all_no
+
+ 
+
+class process():
+
+    def __init__(self):
+        #print("variables initialisées -> pro / next_pro")
+        self.pro=''
+        self.next_pro=''
+
+
+    def get_pro(self):
+        return self.pro
+
+    def set_pro(self,val):
+        self.pro=val
+
+
+    def get_next_pro(self):
+        return self.next_pro
+
+    def set_next_pro(self,val):
+        self.next_pro=val
+
+
+    def open(no):# ouvre fenetre ET charge subprocess dans variable
+
+        cmd="C:\\Program Files (x86)\\Nox\\bin\\Nox.exe -clone:Nox_"+str(no)+' -startPackage:fr.gifi.loto'
+        #cmd='C:\\Program Files\\BlueStacks_nxt\\HD-Player.exe --instance Pie64_'+str(no)+' --cmd launchApp --package "fr.gifi.loto"'
+        proc=Popen(cmd, stdout=None, stderr=None, shell=False)
+
+        print('load and open android '+str(no)+'---ok \n')
+        timestamp.pause(5)
+        return proc
+
+
+    def closed(pro,no):
+
+        '''
+        #print("the commandline is {}".format(pro.args))
+        current_pro=format(pro.args)
+        if ("Nox_"+str(no)) in (current_pro):#inutile pro=no dans le code
+            print('check ---ok')
+        else:
+            bug.load(no)
+        '''
+        #pro.kill()#securité fermeture
+
+        if screen.loc_screen("croix_nox")==("y"):
+            screen.click("croix_nox")#fermeture normal
+            print('closed android '+str(no)+'---ok \n')
+            timestamp.pause(4)
+        
+        else:
+            print('closed android '+str(no)+'---BUG !!! \n')
+
+
+
+class screen():
+
+    def loc_list_region(loc_screen):
+
+        list_region=pyautogui.locateAllOnScreen("C:/gifi/images/"+(loc_screen)+".png", confidence=0.94)
+        return list_region
+        
+
+
+    def loc_screen_region(loc_screen,location):#try to locate screen into region return name of screen if found it !!
+
+        locate=pyautogui.locateOnScreen("C:/gifi/images/"+(loc_screen)+".png",region=location,confidence=0.97)
+        if locate != None:
+            print ("found screen " +(loc_screen)+" ---yes")
+            return (loc_screen)
+        else:
+            print ("locate screen " +(loc_screen)+" ---no")
+            return 0 #0 instead of none !!
+    
+    
+
+    def loc_screen(loc_screen):#try to locate screen into whole screen return y or n
+        locate=pyautogui.locateOnScreen("C:/gifi/images/"+(loc_screen)+".png", confidence=0.95)
+        if locate != None:
+            print ("found screen " +(loc_screen)+" ---yes")
+            return "y"
+        else:
+            print ("locate screen " +(loc_screen)+" ---no")
+            return "n"
+
+
+
+    def loc_pix(title,pos_x,pos_y,r,g,b):#try to locate color into pixel return y or n
+        locate=pyautogui.pixelMatchesColor(pos_x, pos_y, (r,g,b))
+        if locate != False:
+            print ("color into pixel " +(title)+" ---yes")
+            return "y"
+        else:
+            print ("color into pixel " +(title)+" ---no")
+            return "n"
+
+
+
+    def click(loc_screen):#click
+
+        locate=pyautogui.locateOnScreen("C:/gifi/images/"+(loc_screen)+".png", confidence=0.95)
+
+        if locate != None:
+            pyautogui.click(locate) 
+            print("click "+loc_screen+" ---ok")
+            timestamp.pause(1)
+        
+        else:
+            print("no screen / no click "+loc_screen)
+
+
+    def screenshot_region(name,region):
+        pyautogui.screenshot(r"c:/gifi/screenshot/"+(name),region)
+
+
+
+    def screenshot(name):
+        pyautogui.screenshot(r"c:/gifi/screenshot/"+(name))
+
+
+class ts():
+
+    def pause(nb):
+        time.sleep(nb)
+
+    
+    def date():
+        local_timestamp = datetime.now()
+        local_date=str(local_timestamp)[:10]#DATE
+        return local_date
+
+
+    def datetime():
+        local_timestamp = datetime.now()
+        local_date_time_format=str(local_timestamp)[:16]#DATE ET HEURE
+        local_datetime=local_date_time_format.replace(':','H')
+        return local_datetime
+    
+    
+    def full():
+        now=datetime.now()
+        return now
+
+
+class check():
+
+    def __init__(self):
+        self.status="ok"
+
+    def set_status(self,val):# _BUG_ ou _OK_
+        self.status=val
+
+    def get_status(self):
+        return self.status
+
+
+    def bug(no):
+        print("BUG !!!")
+        path.check("bug")
+        path_name="bug/"+str(no)+" "+(timestamp.datetime())+".png" #no_android qui bug !!
+        screen.screenshot(path_name)
+
+
